@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EbonReach — a Shadowbane server</title>
+<meta name="description" content="EbonReach is a small, actively maintained Shadowbane server. Player-built cities, open-world sieges, and a world that remembers who took it.">
+<meta property="og:title" content="EbonReach">
+<meta property="og:description" content="A small, actively maintained Shadowbane server. Player-built cities, open-world sieges, and a world that remembers who took it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14101c;
+  --stone:#1d1828;
+  --edge:#2e2740;
+  --parchment:#ece7f3;
+  --muted:#9a91ab;
+  --amethyst:#9b7fc4;
+  --ember:#c98a4b;
+  --measure:34rem;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--ink);
+  color:var(--parchment);
+  font-family:"EB Garamond",Georgia,serif;
+  font-size:1.0625rem;
+  line-height:1.65;
+  font-variant-numeric:oldstyle-nums;
+}
+a{color:var(--amethyst);text-decoration-thickness:1px;text-underline-offset:.18em}
+a:hover{color:var(--parchment)}
+:focus-visible{outline:2px solid var(--amethyst);outline-offset:3px}
+
+.wrap{width:min(100% - 2.5rem,64rem);margin-inline:auto}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative;
+  min-height:min(88svh,44rem);
+  display:flex;
+  align-items:flex-end;
+  overflow:hidden;
+  border-bottom:1px solid var(--edge);
+}
+.hero__art{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(120% 90% at 72% 18%, rgba(155,127,196,.30), transparent 58%),
+    radial-gradient(90% 70% at 12% 6%, rgba(90,66,130,.35), transparent 60%),
+    linear-gradient(180deg,#241c36 0%,#1a1428 46%,var(--ink) 100%);
+}
+/* Drop background.png next to this file and it takes over from the gradient. */
+.hero__art::after{
+  content:"";position:absolute;inset:0;
+  background:url("background.png") center 28%/cover no-repeat;
+  opacity:.62;
+}
+.hero__scrim{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(20,16,28,.10) 0%,rgba(20,16,28,.55) 55%,var(--ink) 100%);
+}
+.hero__inner{position:relative;padding:0 0 4.5rem}
+
+.wordmark{
+  margin:0;
+  font-weight:500;
+  font-size:clamp(3.5rem,13vw,9rem);
+  line-height:.92;
+  letter-spacing:-.02em;
+  text-shadow:0 2px 40px rgba(10,6,18,.85);
+}
+.wordmark em{font-style:normal;color:var(--amethyst)}
+
+.hero__line{
+  margin:1.25rem 0 0;
+  max-width:var(--measure);
+  font-size:clamp(1.125rem,2.2vw,1.375rem);
+  color:#d6cee4;
+}
+.hero__meta{
+  margin:.6rem 0 0;
+  color:var(--muted);
+  font-style:italic;
+}
+
+.actions{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:2.25rem}
+.btn{
+  display:inline-block;
+  padding:.72em 1.7em;
+  font-size:1.0625rem;
+  font-family:inherit;
+  border:1px solid var(--amethyst);
+  border-radius:2px;
+  text-decoration:none;
+  transition:background-color .18s ease,color .18s ease;
+}
+.btn--solid{background:var(--amethyst);color:#160f22;font-weight:600}
+.btn--solid:hover{background:#b79ade;color:#160f22}
+.btn--ghost{color:var(--parchment);border-color:var(--edge);background:rgba(46,39,64,.4)}
+.btn--ghost:hover{border-color:var(--amethyst);color:var(--parchment)}
+
+/* ---------- live status ---------- */
+#status{display:none;border-bottom:1px solid var(--edge);background:var(--stone)}
+#status.is-live{display:block}
+.status__row{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:2.5rem;
+  padding:1.4rem 0;
+}
+.stat__num{font-size:1.75rem;line-height:1;margin-right:.5rem}
+.stat__num--up{color:var(--amethyst)}
+.stat__num--down{color:var(--ember)}
+.stat span{color:var(--muted)}
+
+/* ---------- sections ---------- */
+section{padding:5rem 0}
+section + section{border-top:1px solid var(--edge)}
+h2{
+  font-weight:500;
+  font-size:clamp(1.75rem,4vw,2.5rem);
+  line-height:1.15;
+  margin:0 0 1.5rem;
+}
+p{max-width:var(--measure)}
+p + p{margin-top:1.1rem}
+
+.cols{display:grid;gap:2.5rem 3.5rem;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));max-width:52rem}
+.cols h3{font-weight:600;font-size:1.1875rem;margin:0 0 .4rem}
+.cols p{margin:0;color:#c6bed4}
+
+/* the install steps genuinely are a sequence, so they're numbered */
+ol.steps{max-width:var(--measure);margin:0;padding:0;list-style:none;counter-reset:step}
+ol.steps li{
+  counter-increment:step;
+  position:relative;
+  padding:0 0 1.5rem 3rem;
+  border-left:1px solid var(--edge);
+  margin-left:.7rem;
+}
+ol.steps li:last-child{border-left-color:transparent;padding-bottom:0}
+ol.steps li::before{
+  content:counter(step);
+  position:absolute;left:-.72rem;top:-.1rem;
+  width:1.45rem;height:1.45rem;
+  display:grid;place-items:center;
+  background:var(--ink);
+  border:1px solid var(--amethyst);
+  border-radius:50%;
+  color:var(--amethyst);
+  font-size:.9rem;
+}
+ol.steps strong{font-weight:600;display:block}
+ol.steps span{color:#c6bed4}
+
+.note{
+  border-left:2px solid var(--ember);
+  padding:.15rem 0 .15rem 1.15rem;
+  color:#c6bed4;
+  font-style:italic;
+  max-width:var(--measure);
+  margin-top:2.5rem;
+}
+
+footer{padding:3rem 0 4rem;border-top:1px solid var(--edge);color:var(--muted)}
+footer p{margin:0;font-size:.95rem}
+footer p + p{margin-top:.5rem}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero__art" aria-hidden="true"></div>
+  <div class="hero__scrim" aria-hidden="true"></div>
+  <div class="wrap hero__inner">
+    <h1 class="wordmark">Ebon<em>Reach</em></h1>
+    <p class="hero__line">Shadowbane, still running. Build a city, hold the ground around it, and lose it to someone who wanted it more.</p>
+    <p class="hero__meta">A small server, run by two brothers, patched most evenings.</p>
+    <div class="actions">
+      <a class="btn btn--solid" href="#start">Get the launcher</a>
+      <a class="btn btn--ghost" href="https://discord.gg/PKH2wEC775" rel="noopener">Join the Discord</a>
+    </div>
+  </div>
+</header>
+
+<div id="status" aria-live="polite">
+  <div class="wrap status__row">
+    <p class="stat" style="margin:0">
+      <span class="stat__num" id="stat-state">—</span><span id="stat-state-label">checking</span>
+    </p>
+    <p class="stat" style="margin:0">
+      <span class="stat__num" id="stat-online">—</span><span>online now</span>
+    </p>
+    <p class="stat" style="margin:0">
+      <span class="stat__num" id="stat-chars">—</span><span>characters</span>
+    </p>
+    <p class="stat" style="margin:0">
+      <span class="stat__num" id="stat-cities">—</span><span>player cities</span>
+    </p>
+  </div>
+</div>
+
+<main>
+  <section id="about">
+    <div class="wrap">
+      <h2>What this is</h2>
+      <p>Shadowbane shut down in 2009. EbonReach runs the same game on the MagicBane emulator, on a server that gets worked on rather than left alone — restored content that shipped broken, fixes for bugs the original never got round to, and rates set so two people can actually reach the part of the game worth playing.</p>
+      <p>It is not a nostalgia museum and it is not a rework. It is Shadowbane, with the sharp edges that were mistakes filed off and the sharp edges that were the point left exactly where they are.</p>
+    </div>
+  </section>
+
+  <section id="world">
+    <div class="wrap">
+      <h2>How the world works</h2>
+      <div class="cols">
+        <div>
+          <h3>Cities are built, not chosen</h3>
+          <p>Plant a Tree of Life, raise walls, hire NPCs, run mines. Everything on the map belongs to somebody who put it there.</p>
+        </div>
+        <div>
+          <h3>Sieges are declared in the open</h3>
+          <p>Place a bane, name the hour, and turn up. No matchmaking, no instance, no undo. The kill feed and siege log post to Discord as it happens.</p>
+        </div>
+        <div>
+          <h3>Death costs something</h3>
+          <p>Open-world PvP nearly everywhere. You drop what you were carrying and someone else picks it up.</p>
+        </div>
+        <div>
+          <h3>Builds are yours to ruin</h3>
+          <p>Six races, twelve promotion classes, discipline runes and trait points. Plenty of ways to build something excellent, and more ways to build something useless.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="start">
+    <div class="wrap">
+      <h2>Starting out</h2>
+      <ol class="steps">
+        <li>
+          <strong>Download the launcher</strong>
+          <span>Windows only. It fetches the game files and keeps them current — about 2.3&nbsp;GB the first time, a few seconds after that.</span>
+        </li>
+        <li>
+          <strong>Let it install</strong>
+          <span>Point it at an empty folder and leave it. When the button says Play, it is done.</span>
+        </li>
+        <li>
+          <strong>Pick a name and log in</strong>
+          <span>Your account is created the first time you log in. There is no separate signup and no email.</span>
+        </li>
+        <li>
+          <strong>Say hello on Discord</strong>
+          <span>The population is small enough that someone will notice you and help. <a href="https://discord.gg/PKH2wEC775" rel="noopener">discord.gg/PKH2wEC775</a></span>
+        </li>
+      </ol>
+
+      <div class="actions">
+        <a class="btn btn--solid" href="#" id="download">Download the launcher</a>
+      </div>
+
+      <p class="note">Fair warning: this is a two-player server that is still being built. Things break, the world gets wiped when it needs to be, and you will occasionally watch someone patch a bug while you are standing in it.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>EbonReach runs on <a href="https://magicbane.com" rel="noopener">MagicBane</a>, an open-source emulator for Shadowbane.</p>
+    <p>Shadowbane was made by Wolfpack Studios and published by Ubisoft. This is a non-commercial fan project with no affiliation to either.</p>
+  </div>
+</footer>
+
+<script>
+// Live status. Point STATUS_URL at a JSON endpoint returning:
+//   { "online": 3, "characters": 28, "cities": 13, "up": true }
+// Until that exists the panel stays hidden rather than showing zeros.
+const STATUS_URL = "";
+
+async function loadStatus(){
+  if(!STATUS_URL) return;
+  try{
+    const r = await fetch(STATUS_URL,{cache:"no-store"});
+    if(!r.ok) return;
+    const d = await r.json();
+
+    const state = document.getElementById("stat-state");
+    state.textContent = d.up ? "\u25CF" : "\u25CB";
+    state.className = "stat__num " + (d.up ? "stat__num--up" : "stat__num--down");
+    document.getElementById("stat-state-label").textContent = d.up ? "server up" : "server down";
+
+    if(d.online     != null) document.getElementById("stat-online").textContent = d.online;
+    if(d.characters != null) document.getElementById("stat-chars").textContent  = d.characters;
+    if(d.cities     != null) document.getElementById("stat-cities").textContent = d.cities;
+
+    document.getElementById("status").classList.add("is-live");
+  }catch(e){
+    // Server unreachable: leave the panel hidden.
+  }
+}
+loadStatus();
+setInterval(loadStatus, 60000);
+</script>
+</body>
+</html>
