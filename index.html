@@ -185,6 +185,7 @@ footer p + p{margin-top:.5rem}
     <div class="actions">
       <a class="btn btn--solid" href="#start">Get the launcher</a>
       <a class="btn btn--ghost" href="https://discord.gg/PKH2wEC775" rel="noopener">Join the Discord</a>
+      <a class="btn btn--ghost" href="leaderboard.html">Leaderboards</a>
     </div>
   </div>
 </header>
@@ -278,24 +279,35 @@ footer p + p{margin-top:.5rem}
 </footer>
 
 <script>
-// Live status. Point STATUS_URL at a JSON endpoint returning:
-//   { "online": 3, "characters": 28, "cities": 13, "up": true }
-// Until that exists the panel stays hidden rather than showing zeros.
-const STATUS_URL = "";
+// Live status, published every 10 minutes by the server
+// (deploy/ops/publish-site-data.sh in the EbonReach repo) to the "data"
+// branch of this repo:
+//   { "up": true, "online": 3, "characters": 28, "cities": 13, "updated": "<ISO time>" }
+// Until the first report exists the panel stays hidden rather than showing zeros.
+// If the last report is over 25 minutes old the whole server box has stopped
+// reporting, so it shows "no report" instead of a stale "up".
+const DATA_BASE = "https://raw.githubusercontent.com/Psyco110990/ebonreach-site/data/";
+const STATUS_URL = DATA_BASE + "status.json";
+const STALE_MINUTES = 25;
 
 async function loadStatus(){
   if(!STATUS_URL) return;
   try{
-    const r = await fetch(STATUS_URL,{cache:"no-store"});
+    // minute-bucket query string so GitHub's 5-minute CDN cache is bypassed
+    const r = await fetch(STATUS_URL + "?t=" + Math.floor(Date.now()/60000),{cache:"no-store"});
     if(!r.ok) return;
     const d = await r.json();
+    const ageMin = d.updated ? (Date.now() - Date.parse(d.updated)) / 60000 : Infinity;
+    const stale = !(ageMin < STALE_MINUTES);
 
     const state = document.getElementById("stat-state");
-    state.textContent = d.up ? "\u25CF" : "\u25CB";
-    state.className = "stat__num " + (d.up ? "stat__num--up" : "stat__num--down");
-    document.getElementById("stat-state-label").textContent = d.up ? "server up" : "server down";
+    const up = d.up && !stale;
+    state.textContent = up ? "\u25CF" : "\u25CB";
+    state.className = "stat__num " + (up ? "stat__num--up" : "stat__num--down");
+    document.getElementById("stat-state-label").textContent =
+      stale ? "no recent report" : (d.up ? "server up" : "server down");
 
-    if(d.online     != null) document.getElementById("stat-online").textContent = d.online;
+    if(d.online     != null) document.getElementById("stat-online").textContent = up ? d.online : 0;
     if(d.characters != null) document.getElementById("stat-chars").textContent  = d.characters;
     if(d.cities     != null) document.getElementById("stat-cities").textContent = d.cities;
 
