@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vorringia World Map</title>
+<meta name="description" content="Interactive map of Vorringia on the EbonReach Shadowbane server: every zone, its level range and lore, with in-game coordinates under your cursor.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+:root{
+  --ink:#14101c; --stone:#1d1828; --edge:#2e2740; --parchment:#ece7f3;
+  --muted:#9a91ab; --amethyst:#9b7fc4; --ember:#c98a4b; --sage:#8fb59a;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ink);color:var(--parchment);font-family:"EB Garamond",Georgia,serif;
+  font-size:1.0625rem;line-height:1.5;display:flex;flex-direction:column}
+a{color:var(--amethyst)} a:hover{color:var(--parchment)}
+:focus-visible{outline:2px solid var(--amethyst);outline-offset:2px}
+
+header{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1.25rem;
+  padding:.75rem 1rem;border-bottom:1px solid var(--edge);background:var(--stone)}
+header h1{margin:0;font-weight:500;font-size:1.5rem;line-height:1}
+header h1 em{font-style:normal;color:var(--amethyst)}
+.back{font-size:.95rem}
+.search{margin-left:auto;position:relative}
+.search input{font:inherit;font-size:1rem;color:var(--parchment);background:var(--ink);
+  border:1px solid var(--edge);border-radius:2px;padding:.35rem .6rem;width:min(16rem,60vw)}
+.search input::placeholder{color:var(--muted)}
+#results{position:absolute;right:0;top:calc(100% + 4px);z-index:1000;list-style:none;margin:0;padding:.25rem 0;
+  min-width:100%;max-height:50vh;overflow:auto;background:var(--stone);border:1px solid var(--edge);display:none}
+#results.open{display:block}
+#results button{all:unset;display:block;width:100%;box-sizing:border-box;padding:.3rem .75rem;cursor:pointer}
+#results button:hover,#results button:focus{background:var(--edge)}
+#results .lv{color:var(--muted);font-size:.9rem;margin-left:.4rem}
+
+#map{flex:1;min-height:20rem;background:#4b3b5a}
+
+.legend{display:flex;flex-wrap:wrap;gap:.25rem 1rem;font-size:.95rem;color:var(--muted)}
+.dot{display:inline-block;width:.7rem;height:.7rem;border-radius:50%;margin-right:.35rem;vertical-align:baseline;border:1px solid rgba(0,0,0,.5)}
+
+/* Leaflet, restyled to match the site */
+.leaflet-container{font-family:inherit;background:#4b3b5a}
+.leaflet-tooltip.zone{background:rgba(20,16,28,.9);color:var(--parchment);border:1px solid var(--edge);
+  border-radius:2px;box-shadow:none;font-size:.95rem;padding:.15rem .5rem}
+.leaflet-tooltip.zone::before{display:none}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--stone);color:var(--parchment);border-radius:3px}
+.leaflet-popup-content-wrapper{border:1px solid var(--edge)}
+.leaflet-popup-content{margin:.8rem 1rem;font-size:1rem;line-height:1.45;max-width:20rem}
+.leaflet-popup-content h2{margin:0 0 .15rem;font-weight:600;font-size:1.2rem}
+.leaflet-popup-content .meta{color:var(--muted);margin:0 0 .5rem;font-size:.95rem}
+.leaflet-popup-content p{margin:0}
+.leaflet-container a.leaflet-popup-close-button{color:var(--muted)}
+.leaflet-bar a{background:var(--stone);color:var(--parchment);border-color:var(--edge)}
+.leaflet-bar a:hover{background:var(--edge);color:var(--parchment)}
+.leaflet-control-attribution{background:rgba(20,16,28,.75)!important;color:var(--muted)}
+.leaflet-control-attribution a{color:var(--amethyst)}
+.coords{background:rgba(20,16,28,.85);color:var(--parchment);border:1px solid var(--edge);border-radius:2px;
+  padding:.2rem .55rem;font-variant-numeric:lining-nums tabular-nums;font-size:.95rem}
+.coords span{color:var(--muted)}
+
+@media (max-width:34rem){ header h1{font-size:1.25rem} .legend{font-size:.85rem} .search{margin-left:0;width:100%} .search input{width:100%} }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back" href="./">&larr; EbonReach</a>
+  <h1>Vorr<em>ingia</em></h1>
+  <div class="legend" aria-label="Level ranges">
+    <span><i class="dot" style="background:var(--sage)"></i>Up to 20</span>
+    <span><i class="dot" style="background:var(--amethyst)"></i>20 to 39</span>
+    <span><i class="dot" style="background:var(--ember)"></i>40 and up</span>
+  </div>
+  <div class="search">
+    <input id="q" type="search" placeholder="Find a zone…" autocomplete="off" aria-label="Find a zone" aria-controls="results">
+    <ul id="results" role="listbox"></ul>
+  </div>
+</header>
+
+<div id="map" role="application" aria-label="Map of Vorringia"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+// Zone data is built from the EbonReach repo by tools/build_map_data.py.
+// Map units are world units: x = world X, y = |world Z|. The image spans the
+// whole world frame (131072 x 98304). In-game "LT / LG" = world units / 100.
+(async () => {
+  const data = await (await fetch("maps/vorringia-zones.json")).json();
+  const W = data.world.width, H = data.world.height;
+
+  const map = L.map("map", {
+    crs: L.CRS.Simple, minZoom: -9, maxZoom: -4, zoomSnap: 0.25, zoomDelta: 0.5,
+    attributionControl: true, maxBoundsViscosity: 0.8
+  });
+  const bounds = [[0, 0], [H, W]];
+  L.imageOverlay(data.image, bounds, {alt: "Vorringia"}).addTo(map);
+  map.setMaxBounds([[-H * 0.1, -W * 0.1], [H * 1.1, W * 1.1]]);
+  map.fitBounds(bounds);
+  map.attributionControl.setPrefix(false).addAttribution("Map art from the Shadowbane client · zone data from EbonReach");
+
+  const color = z => z.min == null ? null : z.min < 20 ? "#8fb59a" : z.min < 40 ? "#9b7fc4" : "#c98a4b";
+  const lt = v => (v / 100).toFixed(0);
+  const markers = {};
+  const small = window.matchMedia("(max-width: 34rem)").matches;
+
+  for (const z of data.zones) {
+    const at = [z.z, z.x];
+    // Island-level parent zones (no level band) are already lettered on the map art.
+    if (z.levels == null) continue;
+    const m = L.circleMarker(at, {radius: small ? 5 : 7, weight: 2, color: "#1a1222", fillColor: color(z), fillOpacity: 0.95})
+      .addTo(map)
+      .bindTooltip(`${z.name} · ${z.levels}`, {className: "zone", direction: "top", offset: [0, -6]});
+    const box = document.createElement("div");
+    const h = document.createElement("h2"); h.textContent = z.name;
+    const meta = document.createElement("p"); meta.className = "meta";
+    meta.textContent = `Levels ${z.levels} · ${lt(z.x)} LT, ${lt(z.z)} LG`;
+    box.append(h, meta);
+    if (z.lore) { const p = document.createElement("p"); p.textContent = z.lore; box.append(p); }
+    m.bindPopup(box, {maxWidth: 320});
+    markers[z.name] = m;
+  }
+
+  // Cursor coordinates in the in-game LT / LG convention.
+  const Coords = L.Control.extend({
+    onAdd() { this.el = L.DomUtil.create("div", "coords"); this.el.innerHTML = "<span>Hover the map for coordinates</span>"; return this.el; }
+  });
+  const coords = new Coords({position: "bottomleft"}).addTo(map);
+  map.on("mousemove", e => {
+    const x = e.latlng.lng, y = e.latlng.lat;
+    if (x < 0 || y < 0 || x > W || y > H) return;
+    coords.el.textContent = `${lt(x)} LT, ${lt(y)} LG`;
+  });
+
+  // Zone search.
+  const q = document.getElementById("q"), results = document.getElementById("results");
+  const zones = data.zones.filter(z => z.levels != null);
+  function show(list) {
+    results.replaceChildren(...list.slice(0, 12).map(z => {
+      const li = document.createElement("li"), b = document.createElement("button");
+      b.type = "button"; b.textContent = z.name;
+      const s = document.createElement("span"); s.className = "lv"; s.textContent = z.levels; b.append(s);
+      b.onclick = () => { results.classList.remove("open"); q.value = z.name;
+        map.flyTo([z.z, z.x], -5.5, {duration: 0.6}); setTimeout(() => markers[z.name].openPopup(), 650); };
+      li.append(b); return li;
+    }));
+    results.classList.toggle("open", list.length > 0);
+  }
+  q.addEventListener("input", () => {
+    const t = q.value.trim().toLowerCase();
+    show(t ? zones.filter(z => z.name.toLowerCase().includes(t)) : []);
+  });
+  q.addEventListener("keydown", e => {
+    if (e.key === "Enter") { const b = results.querySelector("button"); if (b) b.click(); }
+    if (e.key === "Escape") results.classList.remove("open");
+  });
+  document.addEventListener("click", e => { if (!e.target.closest(".search")) results.classList.remove("open"); });
+})();
+</script>
+</body>
+</html>
