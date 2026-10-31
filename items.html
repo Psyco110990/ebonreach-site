@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EbonReach Item Database</title>
+<meta name="description" content="Every item you can get on the EbonReach Shadowbane server: stats, which vendors sell it, and which mobs drop it with the chance per kill.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14101c;
+  --stone:#1d1828;
+  --edge:#2e2740;
+  --parchment:#ece7f3;
+  --muted:#9a91ab;
+  --amethyst:#9b7fc4;
+  --ember:#c98a4b;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--ink);color:var(--parchment);
+  font-family:"EB Garamond",Georgia,serif;font-size:1.0625rem;line-height:1.55;
+  font-variant-numeric:oldstyle-nums;
+}
+a{color:var(--amethyst);text-decoration-thickness:1px;text-underline-offset:.18em}
+a:hover{color:var(--parchment)}
+:focus-visible{outline:2px solid var(--amethyst);outline-offset:3px}
+.wrap{width:min(100% - 2rem,64rem);margin-inline:auto}
+
+header{padding:2.25rem 0 2rem;border-bottom:1px solid var(--edge);
+  background:linear-gradient(180deg,#241c36 0%,var(--ink) 100%)}
+.back{font-size:.95rem}
+h1{margin:.6rem 0 0;font-weight:500;font-size:clamp(2.25rem,7vw,3.75rem);line-height:1;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--amethyst)}
+.lede{margin:.75rem 0 0;color:#c6bed4;max-width:44rem}
+
+section{padding:2rem 0 2.75rem}
+
+.controls{display:grid;gap:.75rem;grid-template-columns:2fr 1fr 1fr;align-items:end;margin-bottom:1rem}
+.controls label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.25rem}
+input,select{
+  width:100%;font:inherit;font-size:1rem;color:var(--parchment);background:var(--stone);
+  border:1px solid var(--edge);border-radius:3px;padding:0 .65rem;height:2.6rem;
+}
+input::placeholder{color:var(--muted)}
+.count{color:var(--muted);font-style:italic;margin:0 0 .75rem;font-size:.95rem}
+
+.list{border-top:1px solid var(--edge)}
+details{border-bottom:1px solid var(--edge)}
+summary{
+  list-style:none;cursor:pointer;display:grid;gap:.15rem 1rem;
+  grid-template-columns:minmax(0,1fr) auto;padding:.6rem 0;
+}
+summary::-webkit-details-marker{display:none}
+summary:hover .iname{color:var(--amethyst)}
+.iname{font-weight:600;overflow-wrap:anywhere}
+.iname::before{content:"▸";display:inline-block;width:1rem;color:var(--muted);transition:transform .15s}
+details[open] .iname::before{transform:rotate(90deg)}
+.meta{grid-column:1/-1;padding-left:1rem;color:var(--muted);font-size:.95rem}
+.where{text-align:right;font-size:.9rem;color:var(--muted);white-space:nowrap}
+.where b{font-weight:500;color:var(--ember)}
+.tag{display:inline-block;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;
+  padding:0 .4rem;border:1px solid var(--edge);border-radius:2px;color:var(--muted);margin-right:.4rem;
+  font-variant-numeric:lining-nums}
+
+.body{padding:.25rem 0 1.25rem 1rem}
+.body h3{margin:1rem 0 .4rem;font-weight:500;font-size:1.05rem;color:var(--muted)}
+.stats{display:flex;flex-wrap:wrap;gap:.25rem 1.5rem;margin:0;padding:0;list-style:none}
+.stats li b{font-weight:500;color:var(--parchment)}
+.stats li{color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:.98rem}
+th,td{text-align:left;padding:.35rem .75rem .35rem 0;border-bottom:1px solid var(--edge);vertical-align:baseline}
+th{font-weight:500;color:var(--muted);font-size:.85rem}
+td.num,th.num{text-align:right;padding-right:0;font-variant-numeric:lining-nums tabular-nums}
+td.num{color:var(--amethyst)}
+.more{color:var(--muted);font-style:italic;font-size:.95rem;margin:.4rem 0 0}
+
+button.load{
+  margin-top:1.25rem;font:inherit;color:var(--parchment);background:transparent;cursor:pointer;
+  border:1px solid var(--amethyst);border-radius:3px;padding:.5rem 1.1rem;
+}
+button.load:hover{background:#241c36}
+.empty{color:var(--muted);font-style:italic}
+.notice{border-left:2px solid var(--ember);padding:.15rem 0 .15rem 1rem;color:#c6bed4;font-style:italic}
+
+footer{padding:2.5rem 0 3.5rem;border-top:1px solid var(--edge);color:var(--muted);font-size:.95rem}
+
+@media (max-width:40rem){
+  .controls{grid-template-columns:1fr 1fr}
+  .controls .q{grid-column:1/-1}
+  .where{grid-column:1/-1;text-align:left;padding-left:1rem;white-space:normal}
+  .hide-sm{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="back" href="./">&larr; EbonReach</a>
+    <h1>Item <em>database</em></h1>
+    <p class="lede">Every item you can get: what it does, which NPC vendors sell it, and which mobs drop it, with the chance per kill.</p>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="wrap">
+      <div class="controls">
+        <div class="q">
+          <label for="q">Search</label>
+          <input id="q" type="search" placeholder="Item, mob or town name" autocomplete="off">
+        </div>
+        <div>
+          <label for="type">Kind</label>
+          <select id="type">
+            <option value="">Everything</option>
+            <option value="WEAPON">Weapons</option>
+            <option value="ARMOR">Armour</option>
+            <option value="JEWELRY">Jewellery</option>
+            <option value="POTION">Potions</option>
+            <option value="RUNE">Runes</option>
+            <option value="RESOURCE">Resources</option>
+            <option value="DEED">Deeds</option>
+            <option value="CONTRACT">Contracts</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+        <div>
+          <label for="src">Get it from</label>
+          <select id="src">
+            <option value="">Anywhere</option>
+            <option value="sold">Vendors</option>
+            <option value="drop">Mob drops</option>
+          </select>
+        </div>
+      </div>
+      <p class="count" id="count">Loading…</p>
+      <div class="list" id="list"></div>
+      <button class="load" id="more" type="button" hidden>Show more</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap" id="foot">Drop chances are per kill, worked out from the server's loot tables at the normal loot rate, outside hotzones. Hotzones roll a second, better table on top.</div>
+</footer>
+
+<script>
+// data/items.json is built by tools/build_item_data.py from the game database.
+// Every name is inserted as text, never as HTML.
+const PAGE = 50;
+const MAIN_TYPES = new Set(["WEAPON","ARMOR","JEWELRY","POTION","RUNE","RESOURCE","DEED","CONTRACT"]);
+let all = [], shown = 0, matches = [];
+
+function el(tag, props = {}, ...kids){
+  const e = document.createElement(tag);
+  Object.assign(e, props);
+  for (const k of kids) if (k !== null && k !== undefined) e.append(k);
+  return e;
+}
+const gold = n => n.toLocaleString("en-GB") + " gold";
+function pct(p){
+  if (p >= 10) return p.toFixed(0) + "%";
+  if (p >= 1) return p.toFixed(1) + "%";
+  if (p >= 0.01) return p.toFixed(2) + "%";
+  return "<0.01%";
+}
+function nice(t){ return t.charAt(0) + t.slice(1).toLowerCase(); }
+
+function statLine(it){
+  const s = [];
+  if (it.type === "WEAPON" && it.dmg[1]) s.push(`${it.dmg[0]}–${it.dmg[1]} ${it.dmgType}`);
+  if (it.defense) s.push(`defence ${it.defense}`);
+  if (it.skill) s.push(`${it.skill}${it.skillPct ? " " + it.skillPct + "%" : ""}`);
+  return s.join(" · ");
+}
+
+function stats(it){
+  const ul = el("ul", {className: "stats"});
+  const add = (k, v) => ul.append(el("li", {}, k + " ", el("b", {textContent: v})));
+  add("Value", gold(it.value));
+  if (it.weight) add("Weight", it.weight);
+  if (it.type === "WEAPON" && it.dmg[1]){
+    add("Damage", `${it.dmg[0]}–${it.dmg[1]} ${it.dmgType}`);
+    if (it.speed) add("Speed", it.speed);
+    if (it.range) add("Range", it.range);
+    if (it.twoHanded) add("Hands", "two");
+  }
+  if (it.defense) add("Defence", it.defense);
+  if (it.resist.some(Boolean)) add("Resists (slash/crush/pierce)", it.resist.join(" / "));
+  if (it.skill) add("Needs", `${it.skill}${it.skillPct ? " " + it.skillPct + "%" : ""}`);
+  if (it.charges > 1) add("Uses", it.charges);
+  return ul;
+}
+
+function vendorTable(it){
+  const t = el("table", {}, el("thead", {}, el("tr", {},
+    el("th", {textContent: "Vendor"}), el("th", {textContent: "Town"}), el("th", {className: "num", textContent: "Price"}))));
+  const b = el("tbody");
+  for (const v of it.vendors)
+    b.append(el("tr", {}, el("td", {}, v.npc, el("span", {className: "hide-sm", textContent: v.role ? ` (${v.role})` : ""})),
+      el("td", {textContent: v.zone}), el("td", {className: "num", textContent: gold(v.price)})));
+  t.append(b);
+  return t;
+}
+
+function dropTable(it){
+  const t = el("table", {}, el("thead", {}, el("tr", {},
+    el("th", {textContent: "Mob"}), el("th", {className: "num hide-sm", textContent: "Level"}),
+    el("th", {textContent: "Where"}), el("th", {className: "num", textContent: "Per kill"}))));
+  const b = el("tbody");
+  for (const d of it.drops)
+    b.append(el("tr", {}, el("td", {textContent: d.mob}), el("td", {className: "num hide-sm", textContent: d.level}),
+      el("td", {textContent: d.zones.join(", ")}), el("td", {className: "num", textContent: pct(d.chance)})));
+  t.append(b);
+  return t;
+}
+
+function card(it){
+  const d = el("details");
+  const best = it.drops.length ? it.drops[0].chance : 0;
+  const cheapest = it.vendors.length ? Math.min(...it.vendors.map(v => v.price)) : 0;
+  const where = el("span", {className: "where"});
+  if (cheapest) where.append(el("b", {textContent: gold(cheapest)}));
+  if (cheapest && best) where.append(" · ");
+  if (best) where.append(`drops up to ${pct(best)}`);
+  const line = statLine(it);
+  d.append(el("summary", {},
+    el("span", {className: "iname", textContent: it.name}), where,
+    el("span", {className: "meta"}, el("span", {className: "tag", textContent: nice(it.type)}), line)));
+
+  // Build the details only when opened; most cards never are.
+  d.addEventListener("toggle", () => {
+    if (!d.open || d.dataset.built) return;
+    d.dataset.built = "1";
+    const body = el("div", {className: "body"}, stats(it));
+    if (it.vendors.length){
+      body.append(el("h3", {textContent: "Sold by"}), vendorTable(it));
+      if (it.vendorCount > it.vendors.length)
+        body.append(el("p", {className: "more", textContent: `and ${it.vendorCount - it.vendors.length} more vendors.`}));
+    }
+    if (it.drops.length){
+      body.append(el("h3", {textContent: "Dropped by"}), dropTable(it));
+      if (it.dropCount > it.drops.length)
+        body.append(el("p", {className: "more", textContent: `and ${it.dropCount - it.drops.length} more kinds of mob, at lower odds.`}));
+    }
+    d.append(body);
+  });
+  return d;
+}
+
+function filter(){
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const type = document.getElementById("type").value;
+  const src = document.getElementById("src").value;
+  matches = all.filter(it => {
+    if (type === "OTHER" ? MAIN_TYPES.has(it.type) : (type && it.type !== type)) return false;
+    if (src === "sold" && !it.vendors.length) return false;
+    if (src === "drop" && !it.drops.length) return false;
+    if (!q) return true;
+    return it._text.includes(q);
+  });
+  shown = 0;
+  document.getElementById("list").replaceChildren();
+  render();
+}
+
+function render(){
+  const list = document.getElementById("list");
+  const next = matches.slice(shown, shown + PAGE);
+  for (const it of next) list.append(card(it));
+  shown += next.length;
+  const n = matches.length;
+  document.getElementById("count").textContent =
+    n ? `${n.toLocaleString("en-GB")} item${n === 1 ? "" : "s"}` + (shown < n ? `, showing ${shown}` : "") : "";
+  if (!n) list.replaceChildren(el("p", {className: "empty", textContent: "Nothing matches. Try a shorter search."}));
+  document.getElementById("more").hidden = shown >= n;
+}
+
+let timer;
+document.getElementById("q").addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(filter, 150); });
+document.getElementById("type").addEventListener("change", filter);
+document.getElementById("src").addEventListener("change", filter);
+document.getElementById("more").addEventListener("click", render);
+
+(async () => {
+  try{
+    const r = await fetch("data/items.json");
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const d = await r.json();
+    all = d.items;
+    // Search covers item names plus the mobs and towns it comes from.
+    for (const it of all)
+      it._text = [it.name, ...it.drops.map(x => x.mob), ...it.drops.flatMap(x => x.zones),
+                  ...it.vendors.map(v => v.zone), ...it.vendors.map(v => v.npc)].join(" ").toLowerCase();
+    const q = new URLSearchParams(location.search).get("q");
+    if (q) document.getElementById("q").value = q;
+    document.getElementById("foot").append(` Built from the game database on ${new Date(d.generated).toLocaleDateString("en-GB", {day: "numeric", month: "long", year: "numeric"})}, at ${d.dropRate}× loot.`);
+    filter();
+  }catch(e){
+    document.getElementById("count").replaceWith(el("p", {className: "notice", textContent: "The item list didn't load. Try refreshing the page."}));
+  }
+})();
+</script>
+</body>
+</html>
