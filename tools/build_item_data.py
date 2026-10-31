@@ -12,8 +12,8 @@ for how much, and which mobs drop it with the chance per kill.
 
 Drop chances follow the server code (engine.gameManager.LootManager):
   - each LOOT entry in a mob's booty sets (its mob type's and its own) rolls
-    1-100 and drops if roll < dropChance x NORMAL_DROP_RATE ("<", so a 4%
-    entry at 1.0x is really 3%; computed as the code does it)
+    1-100 and drops if roll <= dropChance x NORMAL_DROP_RATE (the server used
+    "<" until the 31 Oct fix; pass --old-roll for data from before it)
   - the treasure table then rolls 1-100 to pick an item list
   - the item list rolls between the mob's level-based min and max
     (TableRoll: min = 4.469 x level - 3.469, at least 70; max = 4.882 x level
@@ -31,7 +31,7 @@ import subprocess
 import sys
 from collections import defaultdict
 
-NORMAL_DROP_RATE = 1.5      # MB_NORMAL_DROP_RATE on live
+NORMAL_DROP_RATE = 1.35     # MB_NORMAL_DROP_RATE on live (1.5 before the 31 Oct loot fix)
 MAX_SOURCES = 8             # mobs listed per item; the rest are counted
 
 
@@ -64,9 +64,14 @@ def last_match_counts(rows, lo, hi):
     return counts
 
 
+OLD_ROLL = False
+
+
 def loot_chance(dc, rate):
-    # rolls k in 1..100 with k < dc * rate
-    return max(0, min(100, math.ceil(dc * rate) - 1)) / 100.0
+    if OLD_ROLL:   # rolls k in 1..100 with k < dc * rate
+        return max(0, min(100, math.ceil(dc * rate) - 1)) / 100.0
+    # rolls k in 1..100 with k <= dc * rate
+    return max(0, min(100, math.floor(dc * rate))) / 100.0
 
 
 def main():
@@ -76,7 +81,10 @@ def main():
     ap.add_argument("--mysql", default="mariadb")
     ap.add_argument("--out", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "items.json"))
     ap.add_argument("--rate", type=float, default=NORMAL_DROP_RATE)
+    ap.add_argument("--old-roll", action="store_true", help="server code from before the 31 Oct loot fix")
     args = ap.parse_args()
+    global OLD_ROLL
+    OLD_ROLL = args.old_roll
 
     items = {}
     for r in q(args, """SELECT ID, name, type, value, weight, skillRequired, percentRequired,
