@@ -60,6 +60,7 @@ table{width:100%;border-collapse:collapse}
 th,td{text-align:left;padding:.5rem .75rem .5rem 0;border-bottom:1px solid var(--edge);vertical-align:baseline}
 th{font-weight:500;color:var(--muted);font-size:.9rem}
 td.when{color:var(--muted);white-space:nowrap;font-size:.95rem;width:7rem}
+#upcoming-sieges td.when{white-space:normal;width:auto;color:inherit}
 td.num{text-align:right;font-variant-numeric:lining-nums tabular-nums;color:var(--amethyst);padding-right:0}
 th.num{text-align:right;padding-right:0}
 .vs{color:var(--muted);padding:0 .3rem}
@@ -117,6 +118,17 @@ footer{padding:2.5rem 0 3.5rem;border-top:1px solid var(--edge);color:var(--mute
         <thead><tr><th>When</th><th>Killer</th><th>Victim</th></tr></thead>
         <tbody></tbody>
       </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Upcoming sieges</h2>
+      <table id="upcoming-sieges">
+        <thead><tr><th>Starts</th><th>Attacker vs defender</th><th>City</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="sub">Times are in your own time zone. EbonBot posts a reminder in Discord an hour before each siege.</p>
     </div>
   </section>
 
@@ -215,6 +227,28 @@ async function load(){
         el("td", {}, s.attacker || "?", el("span", {className: "vs", textContent: "vs"}), s.defender || "?"),
         el("td", {textContent: s.city})),
       "No sieges yet.");
+
+    fillTable("upcoming-sieges", d.upcoming_sieges, s => {
+      const td = el("td", {className: "when"});
+      if (!s.starts){
+        td.textContent = "Time not chosen yet";
+        td.title = "Defenders pick the hour; if they don't, the server picks one.";
+      } else {
+        const at = new Date(s.starts * 1000), mins = Math.round((at - Date.now()) / 60000);
+        const day = at.toLocaleDateString(undefined, {weekday: "short", day: "numeric", month: "short"});
+        const time = at.toLocaleTimeString(undefined, {hour: "2-digit", minute: "2-digit"});
+        let soon;
+        if (mins <= 0) soon = "under way";
+        else if (mins < 60) soon = "in " + mins + "m";
+        else if (mins < 48 * 60) soon = "in " + Math.floor(mins / 60) + "h " + (mins % 60) + "m";
+        else soon = "in " + Math.round(mins / 1440) + " days";
+        td.textContent = day + " " + time + " (" + soon + ")";
+        td.title = at.toString();
+      }
+      return el("tr", {}, td,
+        el("td", {}, s.attacker || "?", el("span", {className: "vs", textContent: "vs"}), s.defender || "?"),
+        el("td", {textContent: s.city}));
+    }, "No sieges scheduled.");
 
     fillTable("cities", d.cities, c =>
       el("tr", {}, el("td", {textContent: c.name}), el("td", {className: "num", textContent: c.sieges_withstood})),
