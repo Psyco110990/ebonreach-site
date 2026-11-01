@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EbonReach Leaderboards</title>
+<meta name="description" content="PvP kills, sieges and cities on the EbonReach Shadowbane server, updated every 10 minutes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14101c;
+  --stone:#1d1828;
+  --edge:#2e2740;
+  --parchment:#ece7f3;
+  --muted:#9a91ab;
+  --amethyst:#9b7fc4;
+  --ember:#c98a4b;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--ink);color:var(--parchment);
+  font-family:"EB Garamond",Georgia,serif;font-size:1.0625rem;line-height:1.55;
+  font-variant-numeric:oldstyle-nums;
+}
+a{color:var(--amethyst);text-decoration-thickness:1px;text-underline-offset:.18em}
+a:hover{color:var(--parchment)}
+:focus-visible{outline:2px solid var(--amethyst);outline-offset:3px}
+.wrap{width:min(100% - 2rem,64rem);margin-inline:auto}
+
+header{padding:2.25rem 0 2rem;border-bottom:1px solid var(--edge);
+  background:linear-gradient(180deg,#241c36 0%,var(--ink) 100%)}
+.back{font-size:.95rem}
+h1{margin:.6rem 0 0;font-weight:500;font-size:clamp(2.25rem,7vw,3.75rem);line-height:1;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--amethyst)}
+.updated{margin:.6rem 0 0;color:var(--muted);font-style:italic}
+
+section{padding:2.75rem 0}
+section + section{border-top:1px solid var(--edge)}
+h2{margin:0 0 1.25rem;font-weight:500;font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.15}
+h3{margin:0 0 .6rem;font-weight:600;font-size:1.125rem}
+.sub{color:var(--muted);font-weight:400;font-style:italic;font-size:.95rem}
+
+.boards{display:grid;gap:2rem 3rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}
+
+ol.rank{list-style:none;margin:0;padding:0;counter-reset:r}
+ol.rank li{
+  counter-increment:r;display:flex;align-items:baseline;gap:.75rem;
+  padding:.45rem 0;border-bottom:1px solid var(--edge);
+}
+ol.rank li::before{content:counter(r);width:1.5rem;flex:none;color:var(--muted);text-align:right;font-size:.95rem}
+ol.rank li:nth-child(1)::before{color:var(--ember)}
+ol.rank .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ol.rank .n{font-variant-numeric:lining-nums tabular-nums;color:var(--amethyst)}
+ol.rank li:nth-child(1) .name{font-weight:600}
+
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:.5rem .75rem .5rem 0;border-bottom:1px solid var(--edge);vertical-align:baseline}
+th{font-weight:500;color:var(--muted);font-size:.9rem}
+td.when{color:var(--muted);white-space:nowrap;font-size:.95rem;width:7rem}
+td.num{text-align:right;font-variant-numeric:lining-nums tabular-nums;color:var(--amethyst);padding-right:0}
+th.num{text-align:right;padding-right:0}
+.vs{color:var(--muted);padding:0 .3rem}
+.tag{display:inline-block;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;
+  padding:.05rem .45rem;border:1px solid var(--edge);border-radius:2px;color:var(--muted)}
+.tag--DECLARED{border-color:var(--ember);color:var(--ember)}
+.tag--ENDED{border-color:var(--amethyst);color:var(--amethyst)}
+
+.empty{color:var(--muted);font-style:italic;margin:0}
+.notice{border-left:2px solid var(--ember);padding:.15rem 0 .15rem 1rem;color:#c6bed4;font-style:italic}
+
+footer{padding:2.5rem 0 3.5rem;border-top:1px solid var(--edge);color:var(--muted);font-size:.95rem}
+
+@media (max-width:34rem){
+  td.when{width:auto}
+  .hide-sm{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="back" href="./">&larr; EbonReach</a>
+    <h1>Leader<em>boards</em></h1>
+    <p class="updated" id="updated">Loading…</p>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="wrap">
+      <h2>PvP</h2>
+      <div class="boards">
+        <div>
+          <h3>Top killers <span class="sub">last 30 days</span></h3>
+          <ol class="rank" id="k30"></ol>
+        </div>
+        <div>
+          <h3>Top killers <span class="sub">all time</span></h3>
+          <ol class="rank" id="kall"></ol>
+        </div>
+        <div>
+          <h3>Most killed <span class="sub">last 30 days</span></h3>
+          <ol class="rank" id="d30"></ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Recent kills</h2>
+      <table id="recent-kills">
+        <thead><tr><th>When</th><th>Killer</th><th>Victim</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Sieges</h2>
+      <table id="recent-sieges">
+        <thead><tr><th>When</th><th class="hide-sm">Event</th><th>Attacker vs defender</th><th>City</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Player cities</h2>
+      <table id="cities">
+        <thead><tr><th>City</th><th class="num">Sieges withstood</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">Updated by the server every 10 minutes. Kills are open-world PvP deaths; sieges come from the bane log.</div>
+</footer>
+
+<script>
+// Data is published by deploy/ops/publish-site-data.sh (EbonReach repo) to the
+// "data" branch of this repo. All names are inserted as text, never as HTML.
+const URL_BOARD = "https://raw.githubusercontent.com/Psyco110990/ebonreach-site/data/leaderboard.json";
+
+function el(tag, props = {}, ...kids){
+  const e = document.createElement(tag);
+  Object.assign(e, props);
+  for (const k of kids) e.append(k);
+  return e;
+}
+
+// Server times have no zone; the Oracle box runs on UTC.
+function parseTime(s){ return new Date(/[zZ]|[+-]\d\d:\d\d$/.test(s) ? s : s + "Z"); }
+function ago(s){
+  const d = parseTime(s), mins = Math.round((Date.now() - d) / 60000);
+  if (isNaN(mins)) return s;
+  if (mins < 1) return "just now";
+  if (mins < 60) return mins + "m ago";
+  const h = Math.round(mins / 60);
+  if (h < 48) return h + "h ago";
+  return Math.round(h / 24) + "d ago";
+}
+function when(s){
+  const td = el("td", {className: "when", textContent: ago(s)});
+  td.title = parseTime(s).toLocaleString();
+  return td;
+}
+
+function fillRank(id, items, key){
+  const ol = document.getElementById(id);
+  ol.replaceChildren();
+  if (!items || !items.length){ ol.replaceWith(el("p", {className: "empty", id, textContent: "Nothing recorded yet."})); return; }
+  for (const it of items)
+    ol.append(el("li", {}, el("span", {className: "name", textContent: it.name, title: it.name}),
+                           el("span", {className: "n", textContent: it[key]})));
+}
+
+function fillTable(id, items, row, emptyText){
+  const table = document.getElementById(id), body = table.tBodies[0];
+  body.replaceChildren();
+  if (!items || !items.length){ table.replaceWith(el("p", {className: "empty", textContent: emptyText})); return; }
+  for (const it of items) body.append(row(it));
+}
+
+async function load(){
+  const upd = document.getElementById("updated");
+  try{
+    const r = await fetch(URL_BOARD + "?t=" + Math.floor(Date.now() / 60000), {cache: "no-store"});
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const d = await r.json();
+
+    upd.textContent = "Updated " + ago(d.updated) + ".";
+    upd.title = parseTime(d.updated).toLocaleString();
+
+    fillRank("k30",  d.top_killers_30d, "kills");
+    fillRank("kall", d.top_killers_all, "kills");
+    fillRank("d30",  d.most_killed_30d, "deaths");
+
+    fillTable("recent-kills", d.recent_kills, k =>
+      el("tr", {}, when(k.time), el("td", {textContent: k.killer}), el("td", {textContent: k.victim})),
+      "No PvP kills yet.");
+
+    fillTable("recent-sieges", d.recent_sieges, s =>
+      el("tr", {},
+        when(s.time),
+        el("td", {className: "hide-sm"}, el("span", {className: "tag tag--" + String(s.event).replace(/[^A-Z]/g, ""), textContent: s.event})),
+        el("td", {}, s.attacker || "?", el("span", {className: "vs", textContent: "vs"}), s.defender || "?"),
+        el("td", {textContent: s.city})),
+      "No sieges yet.");
+
+    fillTable("cities", d.cities, c =>
+      el("tr", {}, el("td", {textContent: c.name}), el("td", {className: "num", textContent: c.sieges_withstood})),
+      "No player cities yet.");
+  }catch(e){
+    upd.replaceWith(el("p", {className: "notice", textContent: "Leaderboards aren't available right now. The server publishes them every 10 minutes; check back shortly."}));
+  }
+}
+load();
+</script>
+</body>
+</html>

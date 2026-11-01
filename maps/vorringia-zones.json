@@ -1,0 +1,324 @@
+{
+ "world": {
+  "width": 131072,
+  "height": 98304
+ },
+ "image": "maps/vorringia.jpg",
+ "zones": [
+  {
+   "name": "Aedroch Highlands",
+   "x": 76544,
+   "z": 56064,
+   "levels": "20–35",
+   "min": 20,
+   "lore": "A land on the edge of civilization, this frontier teems with beast-men, were-creatures, and wild Gwendannen hill-men who seek the blood of civilized folk. Here the constant struggle betwixt civilization and the Wild rages."
+  },
+  {
+   "name": "Aeran Belendor",
+   "x": 84480,
+   "z": 64000,
+   "levels": "40–60+",
+   "min": 40,
+   "lore": "Once a mighty stronghold of the Elves, the Archmagi wrought mighty spells here. But now the fey woods run with blood; the Rise of Chaos sundered the wards, and an ancient Terror was loosed from its prison!"
+  },
+  {
+   "name": "Aerath Hellendroth",
+   "x": 85760,
+   "z": 58880,
+   "levels": "30–50",
+   "min": 30,
+   "lore": "The great cities of the Deathless Empire once stood in these lands, blue and grey towers as tall as the night skies. Now those cities stand in ruin, and the offspring of dark Elvish experiments lurk here, seeking vengeance."
+  },
+  {
+   "name": "Ashfell Plain",
+   "x": 84736,
+   "z": 69120,
+   "levels": "30–50",
+   "min": 30,
+   "lore": "This was a peaceful and prosperous land until the shadow of the Dragon fell upon it. Now her townships lie in scorched ruin, abandoned to the scourge of drakes, wyverns, and wyrms that overran the land and killed its people."
+  },
+  {
+   "name": "Aurrochs Skrae",
+   "x": 57088,
+   "z": 70144,
+   "levels": "20–35",
+   "min": 20,
+   "lore": "These frigid wastes were held by the Elves of the Deathless Empire until their bestial subjects, the Minotaurs, rose and broke the chains of slavery. Now the Minotaurs guard the remnants of this realm, meeting intruders with brutality."
+  },
+  {
+   "name": "Bone Marches",
+   "x": 107712,
+   "z": 47360,
+   "levels": "40–60+",
+   "min": 40,
+   "lore": "This blighted plain is the staging ground for the heideous legions of Ithriana, Lich-Queen of Oblivion. Here the minions of the Void raise undead armies, enact foul sacrifices, and guard the Death Gate, black portal to the Void itself."
+  },
+  {
+   "name": "Braedoch Highlands",
+   "x": 47872,
+   "z": 47616,
+   "levels": "20–35",
+   "min": 20,
+   "lore": "A land on the edge of civilization, this frontier teems with beast-men, were-creatures, and wild Gwendannen hill-men who seek the blood of civilized folk. Here the constant struggle betwixt civilization and the Wild rages."
+  },
+  {
+   "name": "Derros Plains",
+   "x": 75776,
+   "z": 50176,
+   "levels": "20–35",
+   "min": 20,
+   "lore": "Long ago, these lands were won and tamed by the Centaurs, who fought bravely and nobly against the forces of evil. Now they find their rightful lands beset by all manner of foes, yet the Horselords refuse to abandon their pastoral reaches."
+  },
+  {
+   "name": "Doomhorn Skrae",
+   "x": 44288,
+   "z": 81152,
+   "levels": "20–35",
+   "min": 20,
+   "lore": "These frigid wastes were held by the Elves of the Deathless Empire until their bestial subjects, the Minotaurs, rose and broke the chains of slavery. Now the Minotaurs guard the remnants of this realm, meeting intruders with brutality."
+  },
+  {
+   "name": "Ecklund Wilds",
+   "x": 48896,
+   "z": 79616,
+   "levels": "30–50",
+   "min": 30,
+   "lore": "A rough land, bleak and frigid, this region has been settled by the monstrous bear-men, offspring of the Beast Lords. The Bearkin and have built many strongholds here, defending these lands against all intruders."
+  },
+  {
+   "name": "Fellgrim Forest",
+   "x": 64000,
+   "z": 52224,
+   "levels": "20–35",
+   "min": 20,
+   "lore": "Long ago this land was peaceful, tended by Druids and Rangers who venerated the wood. They fought a bloody war against armies of bestial Orcs, and lost. Now the Orcs despoil the forest, razing the mighty trees."
+  },
+  {
+   "name": "Greensward Pyre",
+   "x": 39680,
+   "z": 57856,
+   "levels": "10–20",
+   "min": 10,
+   "lore": "The dark powers of a necromancer turned this once-pleasant grassland into a darkling wood of dead trees and blighted, blasted moors. Evil legions of the cursed, the doomed, and the dead stalk the living? and they are hungry."
+  },
+  {
+   "name": "Grimscairne",
+   "x": 43264,
+   "z": 45568,
+   "levels": "35–60+",
+   "min": 35,
+   "lore": "For thousands of years the Gwendannen dwelt in these hills, burying their chieftains in mighty cairns. The hill-men were driven away long ago, and in their absence an evil has taken root in these lands. The dead kings stir!"
+  },
+  {
+   "name": "Hethland Holm",
+   "x": 46336,
+   "z": 67840,
+   "levels": "30–50",
+   "min": 30,
+   "lore": "Mighty and fierce, the Invorri thrive in this cold, bleak land, secure in their great halls. The Northmen share their lands with many fierce beasts, and life here is a constant battle against monsters and the elements."
+  },
+  {
+   "name": "Holloch Forest",
+   "x": 61184,
+   "z": 47104,
+   "levels": "20–35",
+   "min": 20,
+   "lore": "Once the Wizards of the Conclave held sway here, studying the arcane arts. Something has gone awry, and now old experiments run amok, driving the Magi from the woods and leaving them dark and evil."
+  },
+  {
+   "name": "Hregend Wildlands",
+   "x": 62464,
+   "z": 70400,
+   "levels": "30–50",
+   "min": 30,
+   "lore": "A rough land, bleak and frigid, this region has been settled by the monstrous bear-men, offspring of the Beast Lords. The Bearkin and have built many strongholds here, defending these lands against all intruders."
+  },
+  {
+   "name": "Jotensgaard",
+   "x": 52480,
+   "z": 67328,
+   "levels": "30–50",
+   "min": 30,
+   "lore": "These rough and inaccessible peaks are home to the Joten, mighty giants who have long warred with Men and Elves. Their strongholds tower on the highest mountains, and giant warriors stride the land, ready to crush their puny foes."
+  },
+  {
+   "name": "Jovhir'akar",
+   "x": 22016,
+   "z": 38144
+  },
+  {
+   "name": "Kharsoom",
+   "x": 27904,
+   "z": 36608,
+   "levels": "20–35",
+   "min": 20,
+   "lore": "Cataclysms in time out of mind turned these lands into an arid wasteland. A powerful Irekei tribe seized this desert, and has since grown powerful, turning to raids and violence against those who trespass upon their land."
+  },
+  {
+   "name": "Kralgaar Holm",
+   "x": 40448,
+   "z": 77056,
+   "levels": "30–50",
+   "min": 30,
+   "lore": "Mighty and fierce, the Invorri thrive in this cold, bleak land, secure in their great halls. The Northmen share their lands with many fierce beasts, and life here is a constant battle against monsters and the elements."
+  },
+  {
+   "name": "Leth'khalivar Desert",
+   "x": 27904,
+   "z": 41472,
+   "levels": "35–60+",
+   "min": 35,
+   "lore": "These remote deserts are filled with ancient ruins, home to Irekei mystics and other terrors of the desert. Fire giants dwell here, and all attempts to civilize these lands by the Temple of the Flame have failed."
+  },
+  {
+   "name": "Maelstrom",
+   "x": 102912,
+   "z": 24832
+  },
+  {
+   "name": "Oblivion Isle",
+   "x": 107712,
+   "z": 48640
+  },
+  {
+   "name": "Pandemonium",
+   "x": 102912,
+   "z": 28160,
+   "levels": "60+",
+   "min": 60,
+   "lore": "The dark heart of Maelstrom, this blighted place contains the Chaos Gate itself. Since the slipping of the seals, Demons swarm here vast numbers, and rumors whisper they are raising an army to ravage all lands, as they did of old."
+  },
+  {
+   "name": "Phaedra's Prize",
+   "x": 55808,
+   "z": 45568,
+   "levels": "35–60+",
+   "min": 35,
+   "lore": "The fierce Amazons have been cut off from their homeland since the Turning. One mighty tribe of warrior women, the Palomi sisterhood, has claimed these wetlands for their own, driving out the hideous beasts they found here."
+  },
+  {
+   "name": "Plain of Ashes",
+   "x": 103360,
+   "z": 53504,
+   "levels": "50–70+",
+   "min": 50,
+   "lore": "The black heart of Oblivion, this blighted realm is dominated by a grim peak, upon which stands the palace of the Lich-Queen. Surrounding it are the keeps of the four Vampire Clans, and evil dwelling places of the Nightborn."
+  },
+  {
+   "name": "Ragnir Holm",
+   "x": 53760,
+   "z": 79616,
+   "levels": "30–50",
+   "min": 30,
+   "lore": "Mighty and fierce, the Invorri thrive in this cold, bleak land, secure in their great halls. The Northmen share their lands with many fierce beasts, and life here is a constant battle against monsters and the elements."
+  },
+  {
+   "name": "Sevaath Mere",
+   "x": 66048,
+   "z": 35328,
+   "levels": "20–35",
+   "min": 20,
+   "lore": "Once populated by a race older than Men, the ruins of an ancient civilization have been overrun by this foul swamp. Inhabited by the savage Lizard Men, this is a place of danger and darkness, where scaly horrors pray to nightmare gods."
+  },
+  {
+   "name": "Southern Battleground",
+   "x": 102400,
+   "z": 24064,
+   "levels": "40–60+",
+   "min": 40,
+   "lore": "Once the Order of Sentinels guarded the Chaos Gate with stout fortresses to the north and south. When the Gate seals slipped these lands become battlegrounds, the front lines in a new and terrible war against Chaos."
+  },
+  {
+   "name": "Tainted Swamp",
+   "x": 77312,
+   "z": 43776,
+   "levels": "35–60+",
+   "min": 35,
+   "lore": "Once this was a mighty forest infested by Orcs, but floods in recent months drove out the Orcs, and brought fouler things. The taint of Chaos has taken deep root here, its foul influence poisoning the water and twisting the wildlife."
+  },
+  {
+   "name": "Terminus",
+   "x": 76800,
+   "z": 72192
+  },
+  {
+   "name": "The Black Bog",
+   "x": 61440,
+   "z": 34816,
+   "levels": "30–50",
+   "min": 30,
+   "lore": "In the deepest of the swamps, a terror of legendary size broods and festers - a black drake of devilish cunning and ancient evil. This boggy land teems with its foul offspring, and scaly beings who worship the drakes as gods."
+  },
+  {
+   "name": "The Blood Sands",
+   "x": 14592,
+   "z": 35840,
+   "levels": "30–50",
+   "min": 30,
+   "lore": "The mighty B'bhaash Orcs found refuge from their human enemies in these savage desert wastes. Only small corners of this region remain free of Orcish domination, home to the remnants of a displaced Irekei tribe, and other terrors."
+  },
+  {
+   "name": "The Doomplain",
+   "x": 38400,
+   "z": 53504,
+   "levels": "30–50",
+   "min": 30,
+   "lore": "Touched by the taint of the Dark, this land is a barren and bleak wasteland, leeched of all life. In this doomed realm even the light of the sun dares not trespass, and hosts of undead seek the souls and flesh of living beings."
+  },
+  {
+   "name": "The Sinking Isles",
+   "x": 61952,
+   "z": 34816
+  },
+  {
+   "name": "Thollok Marsh",
+   "x": 56832,
+   "z": 36096,
+   "levels": "35–60+",
+   "min": 35,
+   "lore": "After their defeat in the War of Ashes, a mighty host of Orcs fled from the lands of Men, taking refuge in these noisome fens. The Orcs grow strong, and these swamps teem with monsters they have raised and nourished."
+  },
+  {
+   "name": "Vale of Nar Addad",
+   "x": 19456,
+   "z": 33792,
+   "levels": "35–60+",
+   "min": 35,
+   "lore": "This remote desert waste has long been the site of horrific tales of walking serpents. Now it is revealed that this valley once lay at the heart of the Realm of Ardan, and is replete with ancient tombs. What wonders might they still hold?"
+  },
+  {
+   "name": "Valkos Wilds",
+   "x": 43520,
+   "z": 40704,
+   "levels": "20–35",
+   "min": 20,
+   "lore": "Wild and untamed, this savage forest is home to the madling Aelfborn. In this land, untouched by the axes and plows of civilization, the hybrid beast-kin run free, and the struggle of fang and claw is the only law."
+  },
+  {
+   "name": "Vander's Doom",
+   "x": 39424,
+   "z": 55808
+  },
+  {
+   "name": "Vorringheim",
+   "x": 52224,
+   "z": 77056
+  },
+  {
+   "name": "Western Battleground",
+   "x": 107264,
+   "z": 28416,
+   "levels": "40–60+",
+   "min": 40,
+   "lore": "Once the Order of Sentinels guarded the Chaos Gate with stout fortresses to the north and south. When the Gate seals slipped these lands become battlegrounds, the front lines in a new and terrible war against Chaos."
+  },
+  {
+   "name": "Ymur's Crown",
+   "x": 43008,
+   "z": 85248,
+   "levels": "30–50",
+   "min": 30,
+   "lore": "These rough and inaccessible peaks are home to the Joten, mighty giants who have long warred with Men and Elves. Their strongholds tower on the highest mountains, and giant warriors stride the land, ready to crush their puny foes."
+  }
+ ]
+}
