@@ -603,8 +603,16 @@ footer{padding-block:2.5rem 3.5rem;border-top:1px solid var(--edge);color:var(--
     render();
   }
 
-  fetch("data/planner.json")
-    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  // The server publishes the live rules to the data branch (publish-site-data.sh);
+  // data/planner.json in this repo is the sample used until that has run.
+  const LIVE = "https://raw.githubusercontent.com/Psyco110990/ebonreach-site/data/planner.json";
+  const load = (url) => fetch(url, { cache: "no-store" }).then((r) => {
+    if (!r.ok) throw new Error(r.status);
+    return r.json();
+  }).then((d) => { if (!d.races || !d.races.length) throw new Error("empty"); return d; });
+
+  load(LIVE + "?t=" + Math.floor(Date.now() / 3600000))
+    .catch(() => load("data/planner.json"))
     .then(start)
     .catch(() => {
       $("stats").innerHTML = '<p class="empty">The planner data didn\'t load. Refresh the page to try again.</p>';
