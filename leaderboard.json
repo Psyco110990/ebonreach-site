@@ -1,0 +1,117 @@
+{
+ "updated": "2026-11-07T12:09:20+00:00",
+ "top_killers_30d": [],
+ "top_killers_all": [
+  {
+   "name": "EbonDev",
+   "kills": 2
+  }
+ ],
+ "most_killed_30d": [],
+ "recent_kills": [
+  {
+   "time": "2026-08-27T18:36:09",
+   "killer": "EbonDev",
+   "victim": "EbonBurn"
+  },
+  {
+   "time": "2026-08-27T18:23:55",
+   "killer": "EbonDev",
+   "victim": "EbonBurn"
+  }
+ ],
+ "recent_sieges": [
+  {
+   "time": "2026-09-13T16:28:46",
+   "event": "DECLARED",
+   "attacker": "Banestone Testing ",
+   "defender": "Testing ",
+   "city": "Unnamed (45183)"
+  },
+  {
+   "time": "2026-09-13T16:24:51",
+   "event": "PLACED",
+   "attacker": "Banestone Testing ",
+   "defender": "Testing ",
+   "city": "Unnamed (45183)"
+  },
+  {
+   "time": "2026-08-27T19:24:39",
+   "event": "DECLARED",
+   "attacker": "Dev Town",
+   "defender": "Test Guild",
+   "city": "Testholm"
+  }
+ ],
+ "cities": [
+  {
+   "name": "Amazonian EbonReach",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "Damned",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "Dev Rolling Town",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "Dev Town",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "Dev Town II",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "Ebon Catherdral",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "Ebon Dwarfs",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "EbonReach",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "EbonReach 2.0",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "EbonReach V2",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "Holy",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "Mine Testing",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "Secrets",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "Tainted",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "Test Tree",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "The Last Watch",
+   "sieges_withstood": 0
+  },
+  {
+   "name": "Train",
+   "sieges_withstood": 0
+  }
+ ],
+ "upcoming_sieges": []
+}
