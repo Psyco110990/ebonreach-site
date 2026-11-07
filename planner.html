@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EbonReach Character Planner</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Plan an EbonReach Shadowbane character: race, class, promotion, starting traits, stats by level and disciplines, then share the build as a link.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* Layout: site header band, then choices on the left and a sticky character sheet on the right; one column on phones. */
+:root{
+  --ink:#14101c;
+  --stone:#1d1828;
+  --edge:#2e2740;
+  --parchment:#ece7f3;
+  --muted:#9a91ab;
+  --amethyst:#9b7fc4;
+  --ember:#c98a4b;
+  --blood:#d4706a;
+  --band:#241c36;
+  --serif:"EB Garamond",Georgia,"Times New Roman",serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--ink);color:var(--parchment);
+  font-family:var(--serif);font-size:1.0625rem;line-height:1.55;
+  font-variant-numeric:oldstyle-nums;
+}
+a{color:var(--amethyst);text-decoration-thickness:1px;text-underline-offset:.18em}
+a:hover{color:var(--parchment)}
+:focus-visible{outline:2px solid var(--amethyst);outline-offset:3px}
+.wrap{max-width:68rem;margin-inline:auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+header{padding-block:2.25rem 2rem;border-bottom:1px solid var(--edge);
+  background:linear-gradient(180deg,var(--band) 0%,var(--ink) 100%)}
+.back{font-size:.95rem}
+h1{margin:.6rem 0 0;font-weight:500;font-size:clamp(2.25rem,7vw,3.75rem);line-height:1;letter-spacing:-.01em;text-wrap:balance}
+h1 em{font-style:normal;color:var(--amethyst)}
+.lede{margin:.75rem 0 0;color:#c6bed4;max-width:44rem}
+.notice{margin:1rem 0 0;border-left:2px solid var(--ember);padding:.15rem 0 .15rem 1rem;color:#c6bed4;font-style:italic;max-width:48rem}
+
+main{padding-block:2rem 3rem}
+.grid{display:grid;gap:2rem;grid-template-columns:minmax(0,1fr) 22rem;align-items:start}
+.col{display:grid;gap:2rem;min-width:0}
+h2{margin:0 0 .6rem;font-weight:500;font-size:1.35rem;text-wrap:balance}
+h2 small{font-size:.9rem;color:var(--muted);font-weight:400;margin-left:.4rem}
+.hint{margin:-.3rem 0 .8rem;color:var(--muted);font-size:.95rem}
+
+.choices{display:grid;gap:.75rem;grid-template-columns:repeat(2,minmax(0,1fr))}
+.choices label,.lbl{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.25rem;letter-spacing:.02em}
+input,select{
+  width:100%;font:inherit;font-size:1rem;color:var(--parchment);background:var(--stone);
+  border:1px solid var(--edge);border-radius:3px;padding:0 .65rem;height:2.6rem;
+}
+select:disabled{color:var(--muted)}
+.levelrow{display:flex;gap:.6rem;align-items:center}
+.levelrow input[type=range]{flex:1;height:auto;padding:0;border:0;background:none;accent-color:var(--amethyst)}
+.levelrow input[type=number]{width:4.5rem;text-align:center;font-variant-numeric:lining-nums tabular-nums}
+.racenote{grid-column:1/-1;color:var(--muted);font-size:.95rem;margin:0}
+
+/* Stats */
+.stats{display:grid;gap:.1rem;border-top:1px solid var(--edge)}
+.stat{display:grid;grid-template-columns:3.2rem 1fr auto;gap:.25rem .9rem;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--edge)}
+.stat .nm{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-variant-numeric:lining-nums}
+.bar{position:relative;height:.5rem;background:var(--stone);border:1px solid var(--edge);border-radius:2px;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--amethyst);opacity:.85}
+.bar b{position:absolute;inset:0 auto 0 0;background:var(--ember);opacity:.55}
+.val{display:flex;align-items:center;gap:.35rem;font-variant-numeric:lining-nums tabular-nums}
+.val output{min-width:4.6rem;text-align:right}
+.val output strong{font-weight:600;font-size:1.15rem}
+.val output span{color:var(--muted);font-size:.9rem}
+.step{font:inherit;width:2.2rem;height:2.2rem;border-radius:3px;border:1px solid var(--edge);background:var(--stone);color:var(--parchment);cursor:pointer;font-size:1.1rem;line-height:1}
+.step:hover:not(:disabled){border-color:var(--amethyst)}
+.step:disabled{opacity:.35;cursor:default}
+.statfoot{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;margin-top:.6rem;color:var(--muted);font-size:.9rem}
+.key i{display:inline-block;width:.8rem;height:.5rem;margin-right:.35rem;vertical-align:middle;border-radius:1px}
+
+/* Rune lists */
+.tools{display:flex;gap:.75rem;align-items:end;margin-bottom:.6rem;flex-wrap:wrap}
+.tools > div{flex:1;min-width:12rem}
+.tools label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.25rem}
+.check{display:flex;align-items:center;gap:.45rem;color:var(--muted);font-size:.95rem;white-space:nowrap;height:2.6rem}
+.check input{width:1rem;height:1rem;accent-color:var(--amethyst)}
+.runes{list-style:none;margin:0;padding:0;border-top:1px solid var(--edge)}
+.rune{border-bottom:1px solid var(--edge)}
+.rune button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:1.4rem minmax(0,1fr) auto;gap:.1rem .6rem;width:100%;padding:.55rem 0;cursor:pointer;align-items:baseline}
+.rune button:focus-visible{outline:2px solid var(--amethyst);outline-offset:2px}
+.rune .box{width:1rem;height:1rem;border:1px solid var(--muted);border-radius:2px;align-self:center;display:grid;place-items:center;font-size:.8rem;color:var(--ink)}
+.rune.on .box{background:var(--amethyst);border-color:var(--amethyst)}
+.rune .rn{font-weight:600;overflow-wrap:anywhere}
+.rune button:hover .rn{color:var(--amethyst)}
+.rune .cost{color:var(--ember);font-variant-numeric:lining-nums tabular-nums;white-space:nowrap}
+.rune .fx{grid-column:2/-1;color:var(--muted);font-size:.93rem}
+.rune .why{grid-column:2/-1;color:var(--blood);font-size:.9rem;font-style:italic}
+.rune.off button{cursor:default}
+.rune.off .rn{color:var(--muted)}
+.rune.off button:hover .rn{color:var(--muted)}
+.rune.bad .why{color:var(--blood)}
+.empty{color:var(--muted);font-style:italic;padding:.6rem 0;margin:0}
+
+/* Sheet */
+.sheet{position:sticky;top:calc(env(safe-area-inset-top,0px) + 1rem);border:1px solid var(--edge);border-radius:4px;background:var(--stone);padding:1.1rem 1.1rem 1.2rem;display:grid;gap:1rem}
+.sheet h2{margin:0;font-size:1.5rem;line-height:1.15}
+.sheet .who{color:var(--muted);margin:.15rem 0 0;font-size:.98rem}
+.points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;text-align:center}
+.points div{border:1px solid var(--edge);border-radius:3px;padding:.45rem .2rem;background:var(--ink)}
+.points strong{display:block;font-size:1.45rem;font-weight:500;font-variant-numeric:lining-nums tabular-nums;line-height:1.1}
+.points span{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.points .left strong{color:var(--amethyst)}
+.points .left.neg strong{color:var(--blood)}
+.sheet table{width:100%;border-collapse:collapse;font-size:.98rem;font-variant-numeric:lining-nums tabular-nums}
+.sheet th,.sheet td{padding:.25rem 0;border-bottom:1px solid var(--edge);text-align:right}
+.sheet th:first-child,.sheet td:first-child{text-align:left}
+.sheet th{font-weight:500;color:var(--muted);font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
+.sheet td:first-child{color:var(--muted);letter-spacing:.1em;font-size:.85rem;text-transform:uppercase}
+.sheet td.hi{color:var(--parchment);font-weight:600}
+.sheet h3{margin:0 0 .3rem;font-size:.85rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chip{font-size:.9rem;border:1px solid var(--edge);border-radius:2px;padding:0 .45rem;background:var(--ink)}
+.chip.d{border-color:var(--amethyst)}
+.none{color:var(--muted);font-style:italic;font-size:.95rem}
+.problems{margin:0;padding:0 0 0 1rem;color:var(--blood);font-size:.93rem}
+.actions{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn{font:inherit;color:var(--parchment);background:transparent;cursor:pointer;border:1px solid var(--amethyst);border-radius:3px;padding:.4rem .9rem}
+.btn:hover{background:var(--band)}
+.btn.quiet{border-color:var(--edge);color:var(--muted)}
+.copied{color:var(--muted);font-size:.9rem;align-self:center}
+textarea{width:100%;font:inherit;font-size:.9rem;color:var(--parchment);background:var(--ink);border:1px solid var(--edge);border-radius:3px;padding:.5rem;min-height:7rem}
+
+footer{padding-block:2.5rem 3.5rem;border-top:1px solid var(--edge);color:var(--muted);font-size:.95rem}
+
+@media (max-width:56rem){
+  .grid{grid-template-columns:minmax(0,1fr)}
+  .sheet{position:static;order:-1}
+}
+@media (max-width:30rem){
+  .choices{grid-template-columns:minmax(0,1fr)}
+  .stat{grid-template-columns:2.8rem 1fr;}
+  .stat .val{grid-column:1/-1;justify-content:flex-end}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="back" href="./">&larr; EbonReach</a>
+    <h1>Character <em>planner</em></h1>
+    <p class="lede">Pick a race, class and starting traits, spend your stat points level by level, and see which disciplines your build can take. Share the finished build as a link.</p>
+    <p class="notice" id="sample" hidden></p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap grid">
+    <div class="col">
+
+      <section aria-labelledby="h-who">
+        <h2 id="h-who">Who you are</h2>
+        <div class="choices">
+          <div><label for="race">Race</label><select id="race"></select></div>
+          <div><label for="cls">Base class</label><select id="cls"></select></div>
+          <div><label for="promo">Promotion class</label><select id="promo"></select></div>
+          <div>
+            <label for="level">Level</label>
+            <div class="levelrow">
+              <input id="levelRange" type="range" min="1" max="75" value="1" aria-label="Level slider">
+              <input id="level" type="number" min="1" max="75" value="1" inputmode="numeric">
+            </div>
+          </div>
+          <p class="racenote" id="racenote"></p>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-stats">
+        <h2 id="h-stats">Stats</h2>
+        <p class="hint">Every stat can drop 5 below its start to free points. Points come from creation plus each level gained.</p>
+        <div class="stats" id="stats"></div>
+        <div class="statfoot">
+          <span class="key"><i style="background:var(--amethyst)"></i>Your stat</span>
+          <span class="key"><i style="background:var(--ember)"></i>Starting value</span>
+          <span>Bar runs to the stat's max.</span>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-traits">
+        <h2 id="h-traits">Starting traits <small id="traitCount"></small></h2>
+        <p class="hint">Taken at creation from the same points as your stats. Traits in the same family replace each other.</p>
+        <div class="tools">
+          <div><label for="tq">Search traits</label><input id="tq" type="search" placeholder="Name or stat, e.g. Dex" autocomplete="off"></div>
+          <label class="check"><input id="tAll" type="checkbox"> Show ones I can't take</label>
+        </div>
+        <ul class="runes" id="traits"></ul>
+      </section>
+
+      <section aria-labelledby="h-disc">
+        <h2 id="h-disc">Disciplines <small id="discCount"></small></h2>
+        <p class="hint">Applied in game. Three slots, a fourth at level 70.</p>
+        <div class="tools">
+          <label class="check"><input id="dAll" type="checkbox"> Show ones I can't take</label>
+        </div>
+        <ul class="runes" id="discs"></ul>
+      </section>
+
+    </div>
+
+    <aside class="sheet" aria-labelledby="sheetName">
+      <div>
+        <h2 id="sheetName">New character</h2>
+        <p class="who" id="sheetWho"></p>
+      </div>
+      <div class="points">
+        <div><strong id="pTotal">0</strong><span>Points</span></div>
+        <div><strong id="pSpent">0</strong><span>Spent</span></div>
+        <div class="left" id="pLeftBox"><strong id="pLeft">0</strong><span>Left</span></div>
+      </div>
+      <table aria-label="Final stats">
+        <thead><tr><th>Stat</th><th>Start</th><th>Final</th><th>Max</th></tr></thead>
+        <tbody id="sheetStats"></tbody>
+      </table>
+      <div><h3>Traits</h3><div class="chips" id="sheetTraits"></div></div>
+      <div><h3>Disciplines</h3><div class="chips" id="sheetDiscs"></div></div>
+      <ul class="problems" id="problems" hidden></ul>
+      <div class="actions">
+        <button class="btn" id="copyLink" type="button">Copy build link</button>
+        <button class="btn quiet" id="copyText" type="button">Copy as text</button>
+        <button class="btn quiet" id="reset" type="button">Start over</button>
+        <span class="copied" id="copied" role="status"></span>
+      </div>
+      <textarea id="fallback" aria-label="Build text to copy" readonly hidden></textarea>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap" id="foot">EbonReach character planner.</div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  const STATS = ["str", "dex", "con", "int", "spi"];
+  const LABEL = { str: "Str", dex: "Dex", con: "Con", int: "Int", spi: "Spi" };
+  const $ = (id) => document.getElementById(id);
+  let D = null;
+  const S = { race: 0, cls: 0, promo: 0, level: 1, alloc: { str: 0, dex: 0, con: 0, int: 0, spi: 0 }, traits: [], discs: [] };
+  let byId = {};
+
+  // Stat points from levels: PlayerCharacter.calculateBaseStats
+  function levelPoints(level) {
+    if (level < 20) return (level - 1) * 5;
+    if (level < 30) return 90 + (level - 19) * 4;
+    if (level < 40) return 130 + (level - 29) * 3;
+    if (level < 50) return 160 + (level - 39) * 2;
+    return 180 + (level - 49);
+  }
+  const race = () => byId.race[S.race];
+  const cls = () => byId.cls[S.cls];
+  const promo = () => byId.promo[S.promo];
+  const allows = (list, id) => !list || list.indexOf(id) !== -1;
+  const traitFor = (t) => allows(t.races, S.race) && allows(t.classes, S.cls);
+
+  function discSlots() {
+    let n = 0;
+    for (const [lvl, slots] of D.rules.disciplineSlots) if (S.level >= lvl) n = slots;
+    return n;
+  }
+  function runeCount() { return S.traits.length + S.discs.length; }
+
+  // Mirrors character creation: traits are applied in order of their
+  // minimum-stat requirement, positive bonuses as they go, penalties last.
+  function compute() {
+    const r = race(), c = cls();
+    const cur = {}, max = {}, start = {}, pen = {};
+    for (const s of STATS) {
+      start[s] = r.start[s] + c.mods[s];
+      cur[s] = start[s] + S.alloc[s];
+      max[s] = r.max[s];
+      pen[s] = 0;
+    }
+    const failed = {};
+    const order = S.traits.map((id) => byId.trait[id]).filter(Boolean)
+      .sort((a, b) => (Object.values(a.need)[0] || 0) - (Object.values(b.need)[0] || 0));
+    let traitCost = 0;
+    for (const t of order) {
+      traitCost += t.cost;
+      for (const s in t.need) if (cur[s] < t.need[s]) failed[t.id] = LABEL[s] + " " + t.need[s] + " needed";
+      for (const s in t.stat) {
+        const [b, m] = t.stat[s];
+        if (b < 0) pen[s] += b; else cur[s] += b;
+        max[s] += m;
+      }
+    }
+    for (const s of STATS) cur[s] += pen[s];
+    let discCost = 0;
+    for (const id of S.discs) { const d = byId.disc[id]; if (d) { discCost += d.cost; for (const s in d.stat) { cur[s] += d.stat[s][0]; max[s] += d.stat[s][1]; } } }
+    const allocSum = STATS.reduce((a, s) => a + S.alloc[s], 0);
+    const total = r.points + levelPoints(S.level);
+    const spent = allocSum + traitCost + discCost;
+    return { start, cur, max, failed, total, spent, left: total - spent, allocSum };
+  }
+
+  function discBlocked(d, st) {
+    if (!allows(d.races, S.race)) return "Not for " + race().name;
+    if (!allows(d.classes, S.cls)) return "Not for " + cls().name + "s";
+    if (d.promotions) {
+      if (!S.promo) return "Needs a promotion class";
+      if (!allows(d.promotions, S.promo)) return "Not for " + promo().name + "s";
+    }
+    if (S.level < d.level) return "Level " + d.level + " needed";
+    for (const id of d.conflicts) if (S.discs.indexOf(id) !== -1) return "Can't be taken with " + byId.disc[id].name;
+    for (const s in d.need) if (st.cur[s] < d.need[s]) return LABEL[s] + " " + d.need[s] + " needed";
+    return "";
+  }
+
+  function effectText(r, hideNeed) {
+    const parts = [];
+    for (const s of STATS) if (r.stat[s]) {
+      const [b, m] = r.stat[s];
+      const sign = (n) => (n > 0 ? "+" : "") + n;
+      parts.push(LABEL[s] + " " + (b === m ? sign(b) : sign(b) + " / max " + sign(m)));
+    }
+    const need = hideNeed ? [] : Object.keys(r.need).map((s) => "needs " + LABEL[s] + " " + r.need[s]);
+    let txt = parts.concat(need).join(", ");
+    if (r.desc) txt = txt ? txt + ". " + r.desc : r.desc;
+    return txt;
+  }
+
+  // ---------- rendering ----------
+  function fillSelect(sel, items, value, blank) {
+    sel.textContent = "";
+    if (blank) sel.add(new Option(blank, "0"));
+    for (const it of items) sel.add(new Option(it.name, String(it.id)));
+    sel.value = String(value);
+  }
+
+  function sanitize() {
+    const r = race();
+    if (r.classes.indexOf(S.cls) === -1) S.cls = r.classes[0];
+    const promos = D.promotions.filter((p) => allows(p.races, S.race) && allows(p.classes, S.cls));
+    if (S.level < D.rules.promotionLevel || !promos.some((p) => p.id === S.promo)) S.promo = 0;
+    S.traits = S.traits.filter((id) => byId.trait[id] && traitFor(byId.trait[id]));
+    // one trait per family
+    const seen = {};
+    S.traits = S.traits.filter((id) => { const sub = byId.trait[id].sub; if (!sub) return true; if (seen[sub]) return false; seen[sub] = 1; return true; });
+    const slots = discSlots();
+    S.discs = S.discs.filter((id) => byId.disc[id]).slice(0, slots);
+    for (const s of STATS) S.alloc[s] = Math.max(D.rules.statFloor, S.alloc[s] | 0);
+  }
+
+  function render() {
+    sanitize();
+    const r = race(), c = cls();
+    fillSelect($("race"), D.races, S.race);
+    fillSelect($("cls"), D.classes.filter((k) => r.classes.indexOf(k.id) !== -1), S.cls);
+    const promos = D.promotions.filter((p) => allows(p.races, S.race) && allows(p.classes, S.cls));
+    const canPromote = S.level >= D.rules.promotionLevel;
+    fillSelect($("promo"), promos, S.promo, canPromote ? "Not promoted" : "Promote at level " + D.rules.promotionLevel);
+    $("promo").disabled = !canPromote || promos.length === 0;
+    $("level").value = S.level; $("levelRange").value = S.level;
+    $("racenote").textContent = r.desc || "";
+    $("racenote").hidden = !r.desc;
+
+    const st = compute();
+
+    // stats
+    const box = $("stats");
+    box.textContent = "";
+    for (const s of STATS) {
+      const row = document.createElement("div");
+      row.className = "stat";
+      const pct = (v) => Math.max(0, Math.min(100, (v / Math.max(1, st.max[s])) * 100));
+      const atFloor = S.alloc[s] <= D.rules.statFloor;
+      const atMax = st.cur[s] >= st.max[s];
+      row.innerHTML =
+        '<span class="nm">' + LABEL[s] + '</span>' +
+        '<div class="bar" aria-hidden="true"><i style="width:' + pct(st.cur[s]) + '%"></i><b style="width:' + pct(st.start[s]) + '%"></b></div>' +
+        '<div class="val">' +
+          '<button class="step" type="button" data-s="' + s + '" data-d="-1" aria-label="Lower ' + LABEL[s] + '"' + (atFloor ? " disabled" : "") + '>&minus;</button>' +
+          '<output aria-live="polite"><strong>' + st.cur[s] + '</strong> <span>/ ' + st.max[s] + '</span></output>' +
+          '<button class="step" type="button" data-s="' + s + '" data-d="1" aria-label="Raise ' + LABEL[s] + '"' + (atMax || st.left <= 0 ? " disabled" : "") + '>+</button>' +
+        '</div>';
+      box.appendChild(row);
+    }
+
+    // traits
+    const q = $("tq").value.trim().toLowerCase();
+    const showAll = $("tAll").checked;
+    const tl = $("traits");
+    tl.textContent = "";
+    let shown = 0;
+    for (const t of D.traits) {
+      const allowed = traitFor(t);
+      const on = S.traits.indexOf(t.id) !== -1;
+      const fx = effectText(t);
+      if (q && (t.name + " " + fx).toLowerCase().indexOf(q) === -1) continue;
+      let why = "";
+      if (!allowed) why = "Not for " + r.name + " " + c.name + "s";
+      else if (on && st.failed[t.id]) why = st.failed[t.id];
+      else if (!on) {
+        const swap = t.sub ? S.traits.map((id) => byId.trait[id]).find((x) => x.sub === t.sub) : null;
+        const extra = t.cost - (swap ? swap.cost : 0);
+        if (extra > st.left) why = "Not enough points";
+        else if (!swap && runeCount() >= D.rules.maxRunes) why = "Rune limit reached";
+        else for (const s in t.need) if (st.cur[s] < t.need[s]) { why = LABEL[s] + " " + t.need[s] + " needed"; break; }
+      }
+      if (!allowed && !showAll) continue;
+      shown++;
+      tl.appendChild(runeItem(t, on, why, "t", !allowed || (!on && why === "Not enough points") || (!on && why === "Rune limit reached")));
+    }
+    if (!shown) tl.innerHTML = '<li><p class="empty">No traits match.</p></li>';
+    $("traitCount").textContent = S.traits.length ? S.traits.length + " taken" : "";
+
+    // disciplines
+    const dl = $("discs");
+    dl.textContent = "";
+    const dShowAll = $("dAll").checked;
+    const slots = discSlots();
+    let dShown = 0;
+    for (const d of D.disciplines) {
+      const on = S.discs.indexOf(d.id) !== -1;
+      let why = on ? "" : discBlocked(d, st);
+      if (!why && !on) {
+        if (S.discs.length >= slots) why = "All " + slots + " slots used";
+        else if (d.cost > st.left) why = "Not enough points";
+        else if (runeCount() >= D.rules.maxRunes) why = "Rune limit reached";
+      }
+      if (why && !on && !dShowAll) continue;
+      dShown++;
+      dl.appendChild(runeItem(d, on, why, "d", !!why && !on));
+    }
+    if (!dShown) dl.innerHTML = '<li><p class="empty">' + (dShowAll ? "No disciplines in this data." : "Nothing this build can take yet. Tick the box to see what's missing.") + '</p></li>';
+    $("discCount").textContent = S.discs.length + " of " + slots + " slots";
+
+    // sheet
+    $("sheetName").textContent = (promo() ? promo().name : c.name);
+    $("sheetWho").textContent = r.name + " " + c.name + (promo() ? " · " + promo().name : "") + " · Level " + S.level;
+    $("pTotal").textContent = st.total;
+    $("pSpent").textContent = st.spent;
+    $("pLeft").textContent = st.left;
+    $("pLeftBox").classList.toggle("neg", st.left < 0);
+    const tb = $("sheetStats");
+    tb.textContent = "";
+    for (const s of STATS) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = "<td>" + LABEL[s] + "</td><td>" + st.start[s] + '</td><td class="hi">' + st.cur[s] + "</td><td>" + st.max[s] + "</td>";
+      tb.appendChild(tr);
+    }
+    chips($("sheetTraits"), S.traits.map((id) => byId.trait[id].name), "", "None");
+    chips($("sheetDiscs"), S.discs.map((id) => byId.disc[id].name), "d", "None");
+
+    const problems = [];
+    if (st.left < 0) problems.push("You've spent " + (-st.left) + " more points than you have.");
+    for (const id in st.failed) problems.push(byId.trait[id].name + ": " + st.failed[id] + " at creation.");
+    for (const s of STATS) if (st.cur[s] > st.max[s]) problems.push(LABEL[s] + " is above its max.");
+    const pl = $("problems");
+    pl.hidden = !problems.length;
+    pl.innerHTML = problems.map((p) => "<li>" + esc(p) + "</li>").join("");
+
+    writeHash();
+  }
+
+  function runeItem(rn, on, why, kind, off) {
+    const li = document.createElement("li");
+    li.className = "rune" + (on ? " on" : "") + (off ? " off" : "");
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.dataset.kind = kind;
+    btn.dataset.id = rn.id;
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    if (off) btn.setAttribute("aria-disabled", "true");
+    const fx = effectText(rn, / needed$/.test(why));
+    btn.innerHTML = '<span class="box" aria-hidden="true">' + (on ? "&#10003;" : "") + '</span>' +
+      '<span class="rn">' + esc(rn.name) + '</span>' +
+      '<span class="cost">' + (rn.cost ? rn.cost + " pts" : "free") + '</span>' +
+      (fx ? '<span class="fx">' + esc(fx) + '</span>' : "") +
+      (why ? '<span class="why">' + esc(why) + '</span>' : "");
+    li.appendChild(btn);
+    return li;
+  }
+
+  function chips(el, names, cls, none) {
+    el.innerHTML = names.length ? names.map((n) => '<span class="chip ' + cls + '">' + esc(n) + "</span>").join("") : '<span class="none">' + none + "</span>";
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch])); }
+
+  // ---------- events ----------
+  $("race").addEventListener("change", (e) => { S.race = +e.target.value; render(); });
+  $("cls").addEventListener("change", (e) => { S.cls = +e.target.value; render(); });
+  $("promo").addEventListener("change", (e) => { S.promo = +e.target.value; render(); });
+  function setLevel(v) { S.level = Math.max(1, Math.min(D.rules.maxLevel, (+v) | 0 || 1)); render(); }
+  $("levelRange").addEventListener("input", (e) => setLevel(e.target.value));
+  $("level").addEventListener("change", (e) => setLevel(e.target.value));
+  $("tq").addEventListener("input", render);
+  $("tAll").addEventListener("change", render);
+  $("dAll").addEventListener("change", render);
+
+  $("stats").addEventListener("click", (e) => {
+    const b = e.target.closest(".step");
+    if (!b || b.disabled) return;
+    S.alloc[b.dataset.s] += +b.dataset.d;
+    render();
+    const again = document.querySelector('.step[data-s="' + b.dataset.s + '"][data-d="' + b.dataset.d + '"]');
+    if (again && !again.disabled) again.focus();
+  });
+
+  function toggle(e) {
+    const b = e.target.closest("button[data-kind]");
+    if (!b || b.getAttribute("aria-disabled") === "true") return;
+    const id = +b.dataset.id, kind = b.dataset.kind;
+    const list = kind === "t" ? S.traits : S.discs;
+    const i = list.indexOf(id);
+    if (i !== -1) list.splice(i, 1);
+    else {
+      if (kind === "t") {
+        const sub = byId.trait[id].sub;
+        if (sub) S.traits = S.traits.filter((x) => byId.trait[x].sub !== sub);
+        S.traits.push(id);
+      } else list.push(id);
+    }
+    render();
+    const again = document.querySelector('button[data-kind="' + kind + '"][data-id="' + id + '"]');
+    if (again) again.focus();
+  }
+  $("traits").addEventListener("click", toggle);
+  $("discs").addEventListener("click", toggle);
+
+  $("reset").addEventListener("click", () => {
+    S.alloc = { str: 0, dex: 0, con: 0, int: 0, spi: 0 }; S.traits = []; S.discs = []; S.promo = 0; S.level = 1;
+    render();
+  });
+
+  function buildText() {
+    const st = compute();
+    const lines = [
+      "EbonReach build: " + race().name + " " + cls().name + (promo() ? " / " + promo().name : "") + ", level " + S.level,
+      STATS.map((s) => LABEL[s] + " " + st.cur[s] + "/" + st.max[s]).join("  "),
+      "Traits: " + (S.traits.map((id) => byId.trait[id].name).join(", ") || "none"),
+      "Disciplines: " + (S.discs.map((id) => byId.disc[id].name).join(", ") || "none"),
+      "Points left: " + st.left,
+      location.href
+    ];
+    return lines.join("\n");
+  }
+  function copy(text, msg) {
+    const done = () => { $("copied").textContent = msg; $("fallback").hidden = true; setTimeout(() => { $("copied").textContent = ""; }, 2500); };
+    const fail = () => { const f = $("fallback"); f.value = text; f.hidden = false; f.focus(); f.select(); $("copied").textContent = "Select and copy the text below."; };
+    try { navigator.clipboard.writeText(text).then(done, fail); } catch (err) { fail(); }
+  }
+  $("copyLink").addEventListener("click", () => copy(location.href, "Link copied."));
+  $("copyText").addEventListener("click", () => copy(buildText(), "Build copied."));
+
+  // ---------- share link: #r2003-c2500-p0-l40-s5x0x3xm5x0-t250001x250005-d3002 ----------
+  const enc = (n) => (n < 0 ? "m" + -n : String(n));
+  const dec = (s) => (s && s[0] === "m" ? -(+s.slice(1)) : +s);
+  function writeHash() {
+    const h = "r" + S.race + "-c" + S.cls + "-p" + S.promo + "-l" + S.level +
+      "-s" + STATS.map((s) => enc(S.alloc[s])).join("x") +
+      "-t" + S.traits.join("x") + "-d" + S.discs.join("x");
+    if (location.hash.slice(1) !== h) {
+      try { history.replaceState(null, "", "#" + h); } catch (err) { /* some frames refuse; the page still works */ }
+    }
+  }
+  function readHash() {
+    const h = location.hash.slice(1);
+    if (!h) return;
+    for (const part of h.split("-")) {
+      const k = part[0], v = part.slice(1);
+      if (k === "r" && byId.race[+v]) S.race = +v;
+      else if (k === "c") S.cls = +v;
+      else if (k === "p") S.promo = +v;
+      else if (k === "l") S.level = Math.max(1, Math.min(75, +v || 1));
+      else if (k === "s") v.split("x").forEach((x, i) => { if (STATS[i]) S.alloc[STATS[i]] = dec(x) || 0; });
+      else if (k === "t") S.traits = v ? v.split("x").map(Number) : [];
+      else if (k === "d") S.discs = v ? v.split("x").map(Number) : [];
+    }
+  }
+
+  function start(data) {
+    D = data;
+    byId = { race: {}, cls: {}, promo: {}, trait: {}, disc: {} };
+    D.races.forEach((x) => (byId.race[x.id] = x));
+    D.classes.forEach((x) => (byId.cls[x.id] = x));
+    D.promotions.forEach((x) => (byId.promo[x.id] = x));
+    D.traits.forEach((x) => (byId.trait[x.id] = x));
+    D.disciplines.forEach((x) => (byId.disc[x.id] = x));
+    const human = D.races.find((x) => x.name === "Human") || D.races[0];
+    S.race = human.id;
+    S.cls = human.classes[0];
+    readHash();
+    if (D.sample) {
+      $("sample").hidden = false;
+      $("sample").textContent = "Preview: these numbers are sample data from the Morloch wiki, not from EbonReach's database yet, so some values will differ in game.";
+    }
+    $("foot").textContent = "Rules follow the EbonReach server code. Data: " + D.source + ", " + D.generated + ".";
+    render();
+  }
+
+  // The server publishes the live rules to the data branch (publish-site-data.sh);
+  // data/planner.json in this repo is the sample used until that has run.
+  const LIVE = "https://raw.githubusercontent.com/Psyco110990/ebonreach-site/data/planner.json";
+  const load = (url) => fetch(url, { cache: "no-store" }).then((r) => {
+    if (!r.ok) throw new Error(r.status);
+    return r.json();
+  }).then((d) => { if (!d.races || !d.races.length) throw new Error("empty"); return d; });
+
+  load(LIVE + "?t=" + Math.floor(Date.now() / 3600000))
+    .catch(() => load("data/planner.json"))
+    .then(start)
+    .catch(() => {
+      $("stats").innerHTML = '<p class="empty">The planner data didn\'t load. Refresh the page to try again.</p>';
+    });
+})();
+</script>
+</body>
+</html>
